@@ -78,3 +78,15 @@ func (h *productHandlerImpl) UpdateProductById(c *fiber.Ctx) error {
 	response := NewResponse(true, "Update product successful", result)
 	return SendResponse(c, response)
 }
+
+func (h *productHandlerImpl) DeleteProductById(c *fiber.Ctx) error {
+	p_id := strings.Trim(c.Params("p_id"), " ")
+
+	if err := h.productUsecase.DeleteProductById(p_id); err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	response := NewResponse(true, "Delete product successful", nil)
+	return SendResponse(c, response)
+}

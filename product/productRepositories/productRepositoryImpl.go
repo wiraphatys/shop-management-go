@@ -93,3 +93,16 @@ func (r *productRepositoryImpl) UpdateProductById(p_id string, productData *prod
 
 	return product, nil
 }
+
+func (r *productRepositoryImpl) DeleteProductById(p_id string) error {
+	result := r.db.Unscoped().Where("p_id = ?", p_id).Delete(&database.Product{})
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("product not found")
+	}
+
+	return nil
+}

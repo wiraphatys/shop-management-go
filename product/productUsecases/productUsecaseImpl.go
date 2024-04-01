@@ -48,3 +48,10 @@ func (u *productUsecaseImpl) UpdateProductById(p_id string, productData *product
 
 	return result, nil
 }
+
+func (u *productUsecaseImpl) DeleteProductById(p_id string) error {
+	if err := u.productRepository.DeleteProductById(p_id); err != nil {
+		return err
+	}
+	return nil
+}
