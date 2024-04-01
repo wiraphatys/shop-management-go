@@ -3,6 +3,7 @@ package usecases
 import (
 	"fmt"
 
+	"github.com/wiraphatys/shop-management-go/customer/entities"
 	"github.com/wiraphatys/shop-management-go/customer/repositories"
 	"github.com/wiraphatys/shop-management-go/database"
 	"github.com/wiraphatys/shop-management-go/util"
@@ -49,6 +50,20 @@ func (u *customerUsecaseImpl) RegisterCustomer(customer *database.Customer) (*da
 
 	return result, nil
 }
+
+func (u *customerUsecaseImpl) UpdateCustomerByEmail(email string, reqBody *entities.CustomerData) (*database.Customer, error) {
+	if !util.IsEmailValid(email) {
+		return nil, fmt.Errorf("invalid email address")
+	}
+
+	result, err := u.customerRepository.UpdateCustomerByEmail(email, reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 func (u *customerUsecaseImpl) DeleteCustomerByEmail(email string) error {
 	if !util.IsEmailValid(email) {
 		return fmt.Errorf("invalid email address")

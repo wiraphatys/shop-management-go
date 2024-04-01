@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gofiber/fiber/v2/log"
+	"github.com/wiraphatys/shop-management-go/customer/entities"
 	"github.com/wiraphatys/shop-management-go/database"
 	"gorm.io/gorm"
 )
@@ -56,6 +57,42 @@ func (r *customerRepositoryImpl) InsertCustomer(customer *database.Customer) (*d
 		return nil, err
 	}
 	return createdCustomer, nil
+}
+
+func (r *customerRepositoryImpl) UpdateCustomerByEmail(email string, customerData *entities.CustomerData) (*database.Customer, error) {
+	var customer *database.Customer
+
+	// Find user by emails
+	result := r.db.Where("email = ?", email).First(&customer)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, errors.New("customer not found")
+		}
+		return nil, result.Error
+	}
+
+	// Update the customer fields
+	updateMap := make(map[string]interface{})
+	if customerData.Name != "" {
+		updateMap["name"] = customerData.Name
+	}
+	if customerData.Address != "" {
+		updateMap["address"] = customerData.Address
+	}
+	if customerData.City != "" {
+		updateMap["city"] = customerData.City
+	}
+	if customerData.Zip != "" {
+		updateMap["zip"] = customerData.Zip
+	}
+
+	// Save customer to database
+	result = r.db.Model(&customer).Updates(updateMap)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return customer, nil
 }
 
 func (r *customerRepositoryImpl) DeleteCustomerByEmail(email string) error {

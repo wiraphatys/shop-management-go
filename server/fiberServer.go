@@ -48,5 +48,6 @@ func (s *fiberServer) initializeCustomerHttpHandler() {
 	customerRouter.Get("/", customerHandler.GetAllCustomers)
 	customerRouter.Get("/:email", customerHandler.GetCustomerByEmail)
 	customerRouter.Post("/register", customerHandler.RegisterCustomer)
+	customerRouter.Put("/:email", customerHandler.UpdateCustomerByEmail)
 	customerRouter.Delete("/:email", customerHandler.DeleteCustomerByEmail)
 }
