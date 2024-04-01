@@ -1,4 +1,4 @@
-package entities
+package customerEntities
 
 type CustomerData struct {
 	Name    string `json:"name"`

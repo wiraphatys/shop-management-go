@@ -1,4 +1,4 @@
-package entities
+package productEntities
 
 type Product struct {
 	Name        string  `json:"name"`

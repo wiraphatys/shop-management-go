@@ -1,4 +1,4 @@
-package handlers
+package customerHandlers
 
 import (
 	"github.com/gofiber/fiber/v2"

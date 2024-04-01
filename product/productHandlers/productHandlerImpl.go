@@ -1,15 +1,15 @@
-package handlers
+package productHandlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/wiraphatys/shop-management-go/product/usecases"
+	"github.com/wiraphatys/shop-management-go/product/productUsecases"
 )
 
 type productHandlerImpl struct {
-	productUsecase usecases.ProductUsecase
+	productUsecase productUsecases.ProductUsecase
 }
 
-func NewProductHandler(productUsecase usecases.ProductUsecase) ProductHandler {
+func NewProductHandler(productUsecase productUsecases.ProductUsecase) ProductHandler {
 	return &productHandlerImpl{
 		productUsecase: productUsecase,
 	}

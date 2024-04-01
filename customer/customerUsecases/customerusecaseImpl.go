@@ -1,19 +1,19 @@
-package usecases
+package customerUsecases
 
 import (
 	"fmt"
 
-	"github.com/wiraphatys/shop-management-go/customer/entities"
-	"github.com/wiraphatys/shop-management-go/customer/repositories"
+	"github.com/wiraphatys/shop-management-go/customer/customerEntities"
+	"github.com/wiraphatys/shop-management-go/customer/customerRepositories"
 	"github.com/wiraphatys/shop-management-go/database"
 	"github.com/wiraphatys/shop-management-go/util"
 )
 
 type customerUsecaseImpl struct {
-	customerRepository repositories.CustomerRepository
+	customerRepository customerRepositories.CustomerRepository
 }
 
-func NewCustomerUsecase(customerRepository repositories.CustomerRepository) CustomerUsecase {
+func NewCustomerUsecase(customerRepository customerRepositories.CustomerRepository) CustomerUsecase {
 	return &customerUsecaseImpl{
 		customerRepository: customerRepository,
 	}
@@ -51,7 +51,7 @@ func (u *customerUsecaseImpl) RegisterCustomer(customer *database.Customer) (*da
 	return result, nil
 }
 
-func (u *customerUsecaseImpl) UpdateCustomerByEmail(email string, reqBody *entities.CustomerData) (*database.Customer, error) {
+func (u *customerUsecaseImpl) UpdateCustomerByEmail(email string, reqBody *customerEntities.CustomerData) (*database.Customer, error) {
 	if !util.IsEmailValid(email) {
 		return nil, fmt.Errorf("invalid email address")
 	}

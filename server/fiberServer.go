@@ -6,9 +6,12 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/wiraphatys/shop-management-go/config"
-	"github.com/wiraphatys/shop-management-go/customer/handlers"
-	"github.com/wiraphatys/shop-management-go/customer/repositories"
-	"github.com/wiraphatys/shop-management-go/customer/usecases"
+	"github.com/wiraphatys/shop-management-go/customer/customerHandlers"
+	"github.com/wiraphatys/shop-management-go/customer/customerRepositories"
+	"github.com/wiraphatys/shop-management-go/customer/customerUsecases"
+	"github.com/wiraphatys/shop-management-go/product/productHandlers"
+	"github.com/wiraphatys/shop-management-go/product/productRepositories"
+	"github.com/wiraphatys/shop-management-go/product/productUsecases"
 
 	"gorm.io/gorm"
 )
@@ -30,7 +33,9 @@ func NewFiberServer(cfg *config.Config, db *gorm.DB) Server {
 func (s *fiberServer) Start() {
 	url := fmt.Sprintf("%v:%d", s.cfg.Server.Host, s.cfg.Server.Port)
 
+	// init module
 	s.initializeCustomerHttpHandler()
+	s.initializeProductHttpHandler()
 
 	log.Printf("Server is starting on %v", url)
 	if err := s.app.Listen(url); err != nil {
@@ -40,9 +45,9 @@ func (s *fiberServer) Start() {
 
 func (s *fiberServer) initializeCustomerHttpHandler() {
 	// initialize all layer
-	customerRepository := repositories.NewCustomerRepository(s.db)
-	customerUsecase := usecases.NewCustomerUsecase(customerRepository)
-	customerHandler := handlers.NewCustomerHandler(customerUsecase)
+	customerRepository := customerRepositories.NewCustomerRepository(s.db)
+	customerUsecase := customerUsecases.NewCustomerUsecase(customerRepository)
+	customerHandler := customerHandlers.NewCustomerHandler(customerUsecase)
 
 	// route
 	customerRouter := s.app.Group("/api/v1/customer")
@@ -53,7 +58,13 @@ func (s *fiberServer) initializeCustomerHttpHandler() {
 	customerRouter.Delete("/:email", customerHandler.DeleteCustomerByEmail)
 }
 
-// func (s *fiberServer) initializeProductHttpHandler() {
-// 	// initialize all layer
-// 	productRepository := repositories
-// }
+func (s *fiberServer) initializeProductHttpHandler() {
+	// initialize all layer
+	productRepository := productRepositories.NewProductRepository(s.db)
+	productUsecase := productUsecases.NewProductUsecase(productRepository)
+	productHandler := productHandlers.NewProductHandler(productUsecase)
+
+	// route
+	productRouter := s.app.Group("/api/v1/product")
+	productRouter.Get("/", productHandler.GetAllProducts)
+}

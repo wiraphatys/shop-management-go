@@ -1,10 +1,10 @@
-package repositories
+package customerRepositories
 
 import (
 	"errors"
 
 	"github.com/gofiber/fiber/v2/log"
-	"github.com/wiraphatys/shop-management-go/customer/entities"
+	"github.com/wiraphatys/shop-management-go/customer/customerEntities"
 	"github.com/wiraphatys/shop-management-go/database"
 	"gorm.io/gorm"
 )
@@ -59,7 +59,7 @@ func (r *customerRepositoryImpl) InsertCustomer(customer *database.Customer) (*d
 	return createdCustomer, nil
 }
 
-func (r *customerRepositoryImpl) UpdateCustomerByEmail(email string, customerData *entities.CustomerData) (*database.Customer, error) {
+func (r *customerRepositoryImpl) UpdateCustomerByEmail(email string, customerData *customerEntities.CustomerData) (*database.Customer, error) {
 	var customer *database.Customer
 
 	// Find user by emails

@@ -1,15 +1,15 @@
-package usecases
+package productUsecases
 
 import (
 	"github.com/wiraphatys/shop-management-go/database"
-	"github.com/wiraphatys/shop-management-go/product/repositories"
+	"github.com/wiraphatys/shop-management-go/product/productRepositories"
 )
 
 type productUsecaseImpl struct {
-	productRepository repositories.ProductRepository
+	productRepository productRepositories.ProductRepository
 }
 
-func NewProductUsecase(productRepository repositories.ProductRepository) ProductUsecase {
+func NewProductUsecase(productRepository productRepositories.ProductRepository) ProductUsecase {
 	return &productUsecaseImpl{
 		productRepository: productRepository,
 	}

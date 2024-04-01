@@ -1,4 +1,4 @@
-package usecases
+package productUsecases
 
 import "github.com/wiraphatys/shop-management-go/database"
 

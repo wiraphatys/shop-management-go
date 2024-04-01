@@ -1,19 +1,19 @@
-package handlers
+package customerHandlers
 
 import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/wiraphatys/shop-management-go/customer/entities"
-	"github.com/wiraphatys/shop-management-go/customer/usecases"
+	"github.com/wiraphatys/shop-management-go/customer/customerEntities"
+	"github.com/wiraphatys/shop-management-go/customer/customerUsecases"
 	"github.com/wiraphatys/shop-management-go/database"
 )
 
 type customerHandlerImpl struct {
-	customerUsecase usecases.CustomerUsecase
+	customerUsecase customerUsecases.CustomerUsecase
 }
 
-func NewCustomerHandler(customerUsecase usecases.CustomerUsecase) CustomerHandler {
+func NewCustomerHandler(customerUsecase customerUsecases.CustomerUsecase) CustomerHandler {
 	return &customerHandlerImpl{
 		customerUsecase: customerUsecase,
 	}
@@ -59,7 +59,7 @@ func (h *customerHandlerImpl) RegisterCustomer(c *fiber.Ctx) error {
 }
 
 func (h *customerHandlerImpl) UpdateCustomerByEmail(c *fiber.Ctx) error {
-	reqBody := new(entities.CustomerData)
+	reqBody := new(customerEntities.CustomerData)
 	if err := c.BodyParser(reqBody); err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)

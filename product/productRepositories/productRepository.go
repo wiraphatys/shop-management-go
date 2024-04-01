@@ -1,4 +1,4 @@
-package repositories
+package productRepositories
 
 import "github.com/wiraphatys/shop-management-go/database"
 
