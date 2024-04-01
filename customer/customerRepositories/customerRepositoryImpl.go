@@ -35,7 +35,7 @@ func (r *customerRepositoryImpl) FindCustomerByEmail(email string) (*database.Cu
 		if result.Error == gorm.ErrRecordNotFound {
 			return nil, result.Error
 		}
-		log.Errorf("FindUserByEmail: %v", result.Error)
+		log.Errorf("FindCustomerByEmail: %v", result.Error)
 		return nil, result.Error
 	}
 	return &customer, nil

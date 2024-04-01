@@ -22,3 +22,11 @@ func (u *productUsecaseImpl) GetAllProducts() (*[]database.Product, error) {
 	}
 	return result, nil
 }
+
+func (u *productUsecaseImpl) GetProductById(p_id string) (*database.Product, error) {
+	result, err := u.productRepository.FindProductById(p_id)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

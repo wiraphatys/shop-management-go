@@ -29,6 +29,7 @@ func (h *customerHandlerImpl) GetAllCustomers(c *fiber.Ctx) error {
 	response := NewResponse(true, "Get all customer successful", result)
 	return SendResponse(c, response)
 }
+
 func (h *customerHandlerImpl) GetCustomerByEmail(c *fiber.Ctx) error {
 	email := strings.Trim(c.Params("email"), " ")
 
@@ -41,6 +42,7 @@ func (h *customerHandlerImpl) GetCustomerByEmail(c *fiber.Ctx) error {
 	response := NewResponse(true, "Get customer successful", result)
 	return SendResponse(c, response)
 }
+
 func (h *customerHandlerImpl) RegisterCustomer(c *fiber.Ctx) error {
 	reqBody := new(database.Customer)
 	if err := c.BodyParser(reqBody); err != nil {
