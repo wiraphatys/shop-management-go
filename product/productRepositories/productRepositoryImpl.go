@@ -36,3 +36,24 @@ func (r *productRepositoryImpl) FindProductById(p_id string) (*database.Product,
 	}
 	return &product, nil
 }
+
+func (r *productRepositoryImpl) InsertProduct(product *database.Product) (*database.Product, error) {
+	// create new product
+	product.PID = "1"
+	result := r.db.Create(product)
+	if result.Error != nil {
+		log.Errorf("InsertProduct: %v", result.Error)
+		return nil, result.Error
+	}
+	log.Debugf("InsertProduct: %v", result.RowsAffected)
+
+	// Get the last inserted product
+	var createdProduct database.Product
+	err := r.db.Order("p_id desc").First(&createdProduct).Error
+	if err != nil {
+		log.Errorf("GetLastProduct: %v", err)
+		return nil, err
+	}
+
+	return &createdProduct, nil
+}

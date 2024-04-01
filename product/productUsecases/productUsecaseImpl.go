@@ -30,3 +30,11 @@ func (u *productUsecaseImpl) GetProductById(p_id string) (*database.Product, err
 	}
 	return result, nil
 }
+
+func (u *productUsecaseImpl) CreateProduct(product *database.Product) (*database.Product, error) {
+	result, err := u.productRepository.InsertProduct(product)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

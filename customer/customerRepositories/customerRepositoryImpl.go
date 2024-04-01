@@ -46,10 +46,10 @@ func (r *customerRepositoryImpl) InsertCustomer(customer *database.Customer) (*d
 	customer.CID = "1"
 	result := r.db.Create(customer)
 	if result.Error != nil {
-		log.Errorf("InsertUserData: %v", result.Error)
+		log.Errorf("InsertCustomer: %v", result.Error)
 		return nil, result.Error
 	}
-	log.Debugf("InsertUserData: %v", result.RowsAffected)
+	log.Debugf("InsertCustomer: %v", result.RowsAffected)
 
 	// returning created customer
 	createdCustomer, err := r.FindCustomerByEmail(customer.Email)

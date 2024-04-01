@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/wiraphatys/shop-management-go/database"
 	"github.com/wiraphatys/shop-management-go/product/productUsecases"
 )
 
@@ -38,5 +39,22 @@ func (h *productHandlerImpl) GetProductById(c *fiber.Ctx) error {
 	}
 
 	response := NewResponse(true, "Get product successful", result)
+	return SendResponse(c, response)
+}
+
+func (h *productHandlerImpl) CreateProduct(c *fiber.Ctx) error {
+	reqBody := new(database.Product)
+	if err := c.BodyParser(reqBody); err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	product, err := h.productUsecase.CreateProduct(reqBody)
+	if err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	response := NewResponse(true, "Create product successful", product)
 	return SendResponse(c, response)
 }
