@@ -31,9 +31,9 @@ func main() {
 		panic(err)
 	}
 
-	if err := database.CreateOrderLineIDTrigger(db.GetDb()); err != nil {
-		panic(err)
-	}
+	// if err := database.CreateOrderLineIDTrigger(db.GetDb()); err != nil {
+	// 	panic(err)
+	// }
 
 	if err := database.CreateAdminIDTrigger(db.GetDb()); err != nil {
 		panic(err)

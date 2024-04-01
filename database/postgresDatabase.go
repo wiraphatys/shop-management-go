@@ -49,9 +49,9 @@ func CreateCustomerIDTrigger(db *gorm.DB) error {
 			max_id BIGINT;
 			new_id TEXT;
 		BEGIN
-			SELECT COALESCE(MAX(SUBSTRING(id, 2)::BIGINT), 0) INTO max_id FROM customers;
+			SELECT COALESCE(MAX(SUBSTRING(c_id, 2)::BIGINT), 0) INTO max_id FROM customers;
 			new_id := 'C' || LPAD(CAST((max_id + 1) AS TEXT), 6, '0');
-			NEW.id := new_id;
+			NEW.c_id := new_id;
 			RETURN NEW;
 		END;
 		$$ LANGUAGE plpgsql;
@@ -76,9 +76,9 @@ func CreateProductIDTrigger(db *gorm.DB) error {
 			max_id BIGINT;
 			new_id TEXT;
 		BEGIN
-			SELECT COALESCE(MAX(SUBSTRING(id, 2)::BIGINT), 0) INTO max_id FROM products;
+			SELECT COALESCE(MAX(SUBSTRING(p_id, 2)::BIGINT), 0) INTO max_id FROM products;
 			new_id := 'P' || LPAD(CAST((max_id + 1) AS TEXT), 6, '0');
-			NEW.id := new_id;
+			NEW.p_id := new_id;
 			RETURN NEW;
 		END;
 		$$ LANGUAGE plpgsql;
@@ -103,9 +103,9 @@ func CreateOrderIDTrigger(db *gorm.DB) error {
 			max_id BIGINT;
 			new_id TEXT;
 		BEGIN
-			SELECT COALESCE(MAX(SUBSTRING(id, 2)::BIGINT), 0) INTO max_id FROM orders;
+			SELECT COALESCE(MAX(SUBSTRING(o_id, 2)::BIGINT), 0) INTO max_id FROM orders;
 			new_id := 'O' || LPAD(CAST((max_id + 1) AS TEXT), 6, '0');
-			NEW.id := new_id;
+			NEW.o_id := new_id;
 			RETURN NEW;
 		END;
 		$$ LANGUAGE plpgsql;
@@ -120,32 +120,32 @@ func CreateOrderIDTrigger(db *gorm.DB) error {
 	return db.Exec(triggerSQL).Error
 }
 
-// CreateOrderLineIDTrigger creates a trigger to automatically generate OrderLine IDs before inserting into the OrderLine table.
-func CreateOrderLineIDTrigger(db *gorm.DB) error {
-	// Trigger function SQL
-	triggerSQL := `
-		CREATE OR REPLACE FUNCTION generate_order_line_id()
-		RETURNS TRIGGER AS $$
-		DECLARE
-			max_id BIGINT;
-			new_id TEXT;
-		BEGIN
-			SELECT COALESCE(MAX(SUBSTRING(id, 2)::BIGINT), 0) INTO max_id FROM order_lines;
-			new_id := 'OL' || LPAD(CAST((max_id + 1) AS TEXT), 6, '0');
-			NEW.id := new_id;
-			RETURN NEW;
-		END;
-		$$ LANGUAGE plpgsql;
+// // CreateOrderLineIDTrigger creates a trigger to automatically generate OrderLine IDs before inserting into the OrderLine table.
+// func CreateOrderLineIDTrigger(db *gorm.DB) error {
+// 	// Trigger function SQL
+// 	triggerSQL := `
+// 		CREATE OR REPLACE FUNCTION generate_order_line_id()
+// 		RETURNS TRIGGER AS $$
+// 		DECLARE
+// 			max_id BIGINT;
+// 			new_id TEXT;
+// 		BEGIN
+// 			SELECT COALESCE(MAX(SUBSTRING(id, 2)::BIGINT), 0) INTO max_id FROM order_lines;
+// 			new_id := 'OL' || LPAD(CAST((max_id + 1) AS TEXT), 6, '0');
+// 			NEW.id := new_id;
+// 			RETURN NEW;
+// 		END;
+// 		$$ LANGUAGE plpgsql;
 
-		CREATE TRIGGER order_line_id_trigger
-		BEFORE INSERT ON order_lines
-		FOR EACH ROW
-		EXECUTE PROCEDURE generate_order_line_id();
-	`
+// 		CREATE TRIGGER order_line_id_trigger
+// 		BEFORE INSERT ON order_lines
+// 		FOR EACH ROW
+// 		EXECUTE PROCEDURE generate_order_line_id();
+// 	`
 
-	// Run the trigger SQL
-	return db.Exec(triggerSQL).Error
-}
+// 	// Run the trigger SQL
+// 	return db.Exec(triggerSQL).Error
+// }
 
 // CreateAdminIDTrigger creates a trigger to automatically generate Admin IDs before inserting into the Admin table.
 func CreateAdminIDTrigger(db *gorm.DB) error {
@@ -157,9 +157,9 @@ func CreateAdminIDTrigger(db *gorm.DB) error {
 			max_id BIGINT;
 			new_id TEXT;
 		BEGIN
-			SELECT COALESCE(MAX(SUBSTRING(id, 2)::BIGINT), 0) INTO max_id FROM admins;
+			SELECT COALESCE(MAX(SUBSTRING(a_id, 2)::BIGINT), 0) INTO max_id FROM admins;
 			new_id := 'A' || LPAD(CAST((max_id + 1) AS TEXT), 6, '0');
-			NEW.id := new_id;
+			NEW.a_id := new_id;
 			RETURN NEW;
 		END;
 		$$ LANGUAGE plpgsql;
