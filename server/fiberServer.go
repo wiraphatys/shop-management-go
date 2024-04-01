@@ -69,4 +69,5 @@ func (s *fiberServer) initializeProductHttpHandler() {
 	productRouter.Get("/", productHandler.GetAllProducts)
 	productRouter.Get("/:p_id", productHandler.GetProductById)
 	productRouter.Post("/", productHandler.CreateProduct)
+	productRouter.Put("/:p_id", productHandler.UpdateProductById)
 }

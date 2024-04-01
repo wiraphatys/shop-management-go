@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/wiraphatys/shop-management-go/database"
+	"github.com/wiraphatys/shop-management-go/product/productEntities"
 	"github.com/wiraphatys/shop-management-go/product/productUsecases"
 )
 
@@ -56,5 +57,24 @@ func (h *productHandlerImpl) CreateProduct(c *fiber.Ctx) error {
 	}
 
 	response := NewResponse(true, "Create product successful", product)
+	return SendResponse(c, response)
+}
+
+func (h *productHandlerImpl) UpdateProductById(c *fiber.Ctx) error {
+	reqBody := new(productEntities.ProductData)
+	if err := c.BodyParser(reqBody); err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	p_id := strings.Trim(c.Params("p_id"), " ")
+
+	result, err := h.productUsecase.UpdateProductById(p_id, reqBody)
+	if err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	response := NewResponse(true, "Update product successful", result)
 	return SendResponse(c, response)
 }

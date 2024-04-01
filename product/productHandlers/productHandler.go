@@ -6,4 +6,5 @@ type ProductHandler interface {
 	GetAllProducts(c *fiber.Ctx) error
 	GetProductById(c *fiber.Ctx) error
 	CreateProduct(c *fiber.Ctx) error
+	UpdateProductById(c *fiber.Ctx) error
 }

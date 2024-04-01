@@ -2,6 +2,7 @@ package productUsecases
 
 import (
 	"github.com/wiraphatys/shop-management-go/database"
+	"github.com/wiraphatys/shop-management-go/product/productEntities"
 	"github.com/wiraphatys/shop-management-go/product/productRepositories"
 )
 
@@ -36,5 +37,14 @@ func (u *productUsecaseImpl) CreateProduct(product *database.Product) (*database
 	if err != nil {
 		return nil, err
 	}
+	return result, nil
+}
+
+func (u *productUsecaseImpl) UpdateProductById(p_id string, productData *productEntities.ProductData) (*database.Product, error) {
+	result, err := u.productRepository.UpdateProductById(p_id, productData)
+	if err != nil {
+		return nil, err
+	}
+
 	return result, nil
 }

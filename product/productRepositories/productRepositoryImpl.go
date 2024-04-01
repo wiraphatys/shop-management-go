@@ -1,8 +1,11 @@
 package productRepositories
 
 import (
+	"errors"
+
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/wiraphatys/shop-management-go/database"
+	"github.com/wiraphatys/shop-management-go/product/productEntities"
 	"gorm.io/gorm"
 )
 
@@ -56,4 +59,37 @@ func (r *productRepositoryImpl) InsertProduct(product *database.Product) (*datab
 	}
 
 	return &createdProduct, nil
+}
+
+func (r *productRepositoryImpl) UpdateProductById(p_id string, productData *productEntities.ProductData) (*database.Product, error) {
+	var product *database.Product
+
+	// Find product by id
+	result := r.db.Where("p_id = ?", p_id).First(&product)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, errors.New("product not found")
+		}
+		return nil, result.Error
+	}
+
+	// update the product fields
+	updateMap := make(map[string]interface{})
+	if productData.Name != "" {
+		updateMap["name"] = productData.Name
+	}
+	if productData.Description != "" {
+		updateMap["description"] = productData.Description
+	}
+	if productData.UnitPrice != 0 {
+		updateMap["unit_price"] = productData.UnitPrice
+	}
+
+	// save product to database
+	result = r.db.Model(&product).Updates(updateMap)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return product, nil
 }
