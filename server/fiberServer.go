@@ -9,6 +9,7 @@ import (
 	"github.com/wiraphatys/shop-management-go/customer/handlers"
 	"github.com/wiraphatys/shop-management-go/customer/repositories"
 	"github.com/wiraphatys/shop-management-go/customer/usecases"
+
 	"gorm.io/gorm"
 )
 
@@ -51,3 +52,8 @@ func (s *fiberServer) initializeCustomerHttpHandler() {
 	customerRouter.Put("/:email", customerHandler.UpdateCustomerByEmail)
 	customerRouter.Delete("/:email", customerHandler.DeleteCustomerByEmail)
 }
+
+// func (s *fiberServer) initializeProductHttpHandler() {
+// 	// initialize all layer
+// 	productRepository := repositories
+// }
