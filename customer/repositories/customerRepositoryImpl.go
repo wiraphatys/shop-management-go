@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"errors"
+
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/wiraphatys/shop-management-go/database"
 	"gorm.io/gorm"
@@ -57,5 +59,14 @@ func (r *customerRepositoryImpl) InsertCustomer(customer *database.Customer) (*d
 }
 
 func (r *customerRepositoryImpl) DeleteCustomerByEmail(email string) error {
+	result := r.db.Unscoped().Where("email = ?", email).Delete(&database.Customer{})
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("customer not found")
+	}
+
 	return nil
 }

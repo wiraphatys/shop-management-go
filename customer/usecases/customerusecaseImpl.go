@@ -50,5 +50,13 @@ func (u *customerUsecaseImpl) RegisterCustomer(customer *database.Customer) (*da
 	return result, nil
 }
 func (u *customerUsecaseImpl) DeleteCustomerByEmail(email string) error {
+	if !util.IsEmailValid(email) {
+		return fmt.Errorf("invalid email address")
+	}
+
+	if err := u.customerRepository.DeleteCustomerByEmail(email); err != nil {
+		return err
+	}
+
 	return nil
 }

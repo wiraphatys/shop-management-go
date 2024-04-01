@@ -29,7 +29,7 @@ func (h *customerHandlerImpl) GetAllCustomers(c *fiber.Ctx) error {
 	return SendResponse(c, response)
 }
 func (h *customerHandlerImpl) GetCustomerByEmail(c *fiber.Ctx) error {
-	email := strings.Trim(c.Params("pid"), " ")
+	email := strings.Trim(c.Params("email"), " ")
 
 	result, err := h.customerUsecase.GetCustomerByEmail(email)
 	if err != nil {
@@ -57,5 +57,13 @@ func (h *customerHandlerImpl) RegisterCustomer(c *fiber.Ctx) error {
 	return SendResponse(c, response)
 }
 func (h *customerHandlerImpl) DeleteCustomerByEmail(c *fiber.Ctx) error {
-	return nil
+	email := strings.Trim(c.Params("email"), " ")
+
+	if err := h.customerUsecase.DeleteCustomerByEmail(email); err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	response := NewResponse(true, "Delete customer successful", nil)
+	return SendResponse(c, response)
 }
