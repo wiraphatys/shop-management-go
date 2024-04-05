@@ -9,6 +9,9 @@ import (
 	"github.com/wiraphatys/shop-management-go/customer/customerHandlers"
 	"github.com/wiraphatys/shop-management-go/customer/customerRepositories"
 	"github.com/wiraphatys/shop-management-go/customer/customerUsecases"
+	"github.com/wiraphatys/shop-management-go/order/orderHandlers"
+	"github.com/wiraphatys/shop-management-go/order/orderRepositories"
+	"github.com/wiraphatys/shop-management-go/order/orderUsecases"
 	"github.com/wiraphatys/shop-management-go/product/productHandlers"
 	"github.com/wiraphatys/shop-management-go/product/productRepositories"
 	"github.com/wiraphatys/shop-management-go/product/productUsecases"
@@ -36,6 +39,7 @@ func (s *fiberServer) Start() {
 	// init module
 	s.initializeCustomerHttpHandler()
 	s.initializeProductHttpHandler()
+	s.initializeOrderHttpHandler()
 
 	log.Printf("Server is starting on %v", url)
 	if err := s.app.Listen(url); err != nil {
@@ -71,4 +75,15 @@ func (s *fiberServer) initializeProductHttpHandler() {
 	productRouter.Post("/", productHandler.CreateProduct)
 	productRouter.Put("/:p_id", productHandler.UpdateProductById)
 	productRouter.Delete("/:p_id", productHandler.DeleteProductById)
+}
+
+func (s *fiberServer) initializeOrderHttpHandler() {
+	// initialize all layer
+	orderRepository := orderRepositories.NewOrderRepository(s.db)
+	orderUsecase := orderUsecases.NewOrderUsecase(orderRepository)
+	orderHandler := orderHandlers.NewOrderHandler(orderUsecase)
+
+	// route
+	orderRouter := s.app.Group("/api/v1/order")
+	orderRouter.Post("/", orderHandler.CreateOrder)
 }
