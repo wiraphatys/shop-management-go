@@ -1,6 +1,8 @@
 package orderRepositories
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/wiraphatys/shop-management-go/database"
 	"github.com/wiraphatys/shop-management-go/product/productRepositories"
@@ -17,14 +19,50 @@ func NewOrderRepository(db *gorm.DB) OrderRepositoriy {
 	}
 }
 
+func (r *orderRepositoryImpl) FindAllOrders() (*[]database.Order, error) {
+	var orders []database.Order
+	result := r.db.Preload("OrderLines").Find(&orders)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &orders, nil
+}
+
+func (r *orderRepositoryImpl) FindOrderById(o_id string) (*database.Order, error) {
+	var order database.Order
+	result := r.db.Preload("OrderLines").First(&order, "o_id = ?", o_id)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, result.Error
+		}
+		log.Errorf("FindOrderById: %v", result.Error)
+		return nil, result.Error
+	}
+	return &order, nil
+}
+
 func (r *orderRepositoryImpl) CreateOrder(c_id string, orderLines *[]database.OrderLine) (*database.Order, error) {
+	// define repository of product , customer
+	productRepository := productRepositories.NewProductRepository(r.db)
+
 	// begin transaction
 	tx := r.db.Begin()
 	defer func() {
-		if e := recover(); e != nil {
+		if r := recover(); r != nil {
 			tx.Rollback()
+			log.Errorf("CreateOrder: Recovered from panic: %v", r)
 		}
 	}()
+
+	// validate p_id
+	for _, line := range *orderLines {
+		// product existed or not ?
+		if _, err := productRepository.FindProductById(line.PID); err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("invalid p_id: %v", line.PID)
+		}
+	}
 
 	// create new order
 	order, err := r.InsertOrder(c_id)
@@ -32,9 +70,6 @@ func (r *orderRepositoryImpl) CreateOrder(c_id string, orderLines *[]database.Or
 		tx.Rollback()
 		return nil, err
 	}
-
-	// define product repository
-	productRepository := productRepositories.NewProductRepository(r.db)
 
 	// create new orderlines
 	for _, line := range *orderLines {

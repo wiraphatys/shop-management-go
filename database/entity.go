@@ -9,9 +9,9 @@ type Customer struct {
 	Address   string    `gorm:"not null" json:"address"`
 	City      string    `gorm:"not null" json:"city"`
 	Zip       string    `gorm:"not null" json:"zip"`
+	Orders    []Order   `gorm:"foreignKey:CID" json:"orders"` // ความสัมพันธ์ One-to-Many กับตาราง Order
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
-	Orders    []Order   `gorm:"foreignKey:CID"` // ความสัมพันธ์ One-to-Many กับตาราง Order
 }
 
 type Product struct {
@@ -34,10 +34,10 @@ type Admin struct {
 
 type Order struct {
 	OID        string      `gorm:"primaryKey;not null" json:"oid"`
-	CID        string      `gorm:"not null" json:"cid"` // Foreign key ไปยัง Customer
+	CID        string      `gorm:"not null" json:"cid"`               // Foreign key ไปยัง Customer
+	OrderLines []OrderLine `gorm:"foreignKey:OID" json:"order_lines"` // ความสัมพันธ์ One-to-Many กับตาราง OrderLine
 	CreatedAt  time.Time   `json:"createdAt"`
 	UpdatedAt  time.Time   `json:"updatedAt"`
-	OrderLines []OrderLine `gorm:"foreignKey:OID"` // ความสัมพันธ์ One-to-Many กับตาราง OrderLine
 	// Customer   Customer    `gorm:"foreignKey:CID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 

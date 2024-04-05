@@ -6,5 +6,7 @@ import (
 )
 
 type OrderUsecase interface {
+	GetAllOrders() (*[]database.Order, error)
+	GetOrderById(o_id string) (*database.Order, error)
 	CreateOrder(orderData *orderEntities.OrderData) (*database.Order, error)
 }
