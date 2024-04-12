@@ -75,6 +75,13 @@ func (u *orderUsecaseImpl) UpdateOrderLineById(orderLine *database.OrderLine) (*
 	return updatedOrderLine, nil
 }
 
+func (u *orderUsecaseImpl) DeleteOrderById(o_id string) error {
+	if err := u.orderRepository.DeleteOrderById(o_id); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (u *orderUsecaseImpl) DeleteOrderLineById(orderLine *orderEntities.OrderLineData) error {
 	// validate o_id , p_id
 	if orderLine.OID == "" || orderLine.PID == "" {

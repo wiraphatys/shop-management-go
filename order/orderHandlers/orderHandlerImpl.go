@@ -77,6 +77,19 @@ func (h *orderHandlerImpl) UpdateOrderLineById(c *fiber.Ctx) error {
 	return SendResponse(c, response)
 }
 
+func (h *orderHandlerImpl) DeleteOrderById(c *fiber.Ctx) error {
+	o_id := strings.Trim(c.Params("o_id"), " ")
+
+	err := h.orderUsecase.DeleteOrderById(o_id)
+	if err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	response := NewResponse(true, "Delete order successful", nil)
+	return SendResponse(c, response)
+}
+
 func (h *orderHandlerImpl) DeleteOrderLineById(c *fiber.Ctx) error {
 	reqBody := new(orderEntities.OrderLineData)
 	if err := c.BodyParser(reqBody); err != nil {

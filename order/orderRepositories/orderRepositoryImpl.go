@@ -152,6 +152,20 @@ func (r *orderRepositoryImpl) UpdateOrderLineById(orderLine *database.OrderLine)
 	return orderLine, nil
 }
 
+func (r *orderRepositoryImpl) DeleteOrderById(o_id string) error {
+	// delete process
+	result := r.db.Unscoped().Where("o_id = ?", o_id).Delete(&database.Order{})
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("order not found")
+	}
+
+	return nil
+}
+
 func (r *orderRepositoryImpl) DeleteOrderLineById(o_id string, p_id string) error {
 	// delete process
 	result := r.db.Unscoped().Where(&database.OrderLine{OID: o_id, PID: p_id}).Delete(&database.OrderLine{})

@@ -9,7 +9,7 @@ type Customer struct {
 	Address   string    `gorm:"not null" json:"address"`
 	City      string    `gorm:"not null" json:"city"`
 	Zip       string    `gorm:"not null" json:"zip"`
-	Orders    []Order   `gorm:"foreignKey:CID" json:"orders"` // ความสัมพันธ์ One-to-Many กับตาราง Order
+	Orders    []Order   `gorm:"foreignKey:CID;constraint:OnDelete:CASCADE" json:"orders"` // ความสัมพันธ์ One-to-Many กับตาราง Order
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -21,7 +21,7 @@ type Product struct {
 	UnitPrice   float64     `gorm:"not null" json:"unit_price"`
 	CreatedAt   time.Time   `json:"createdAt"`
 	UpdatedAt   time.Time   `json:"updatedAt"`
-	OrderLines  []OrderLine `gorm:"foreignKey:PID"` // ความสัมพันธ์ One-to-Many กับตาราง OrderLine
+	OrderLines  []OrderLine `gorm:"foreignKey:PID;constraint:OnDelete:SET NULL"` // ความสัมพันธ์ One-to-Many กับตาราง OrderLine
 }
 
 type Admin struct {
@@ -34,8 +34,8 @@ type Admin struct {
 
 type Order struct {
 	OID        string      `gorm:"primaryKey;not null" json:"oid"`
-	CID        string      `gorm:"not null" json:"cid"`               // Foreign key ไปยัง Customer
-	OrderLines []OrderLine `gorm:"foreignKey:OID" json:"order_lines"` // ความสัมพันธ์ One-to-Many กับตาราง OrderLine
+	CID        string      `gorm:"not null" json:"cid"`                                           // Foreign key ไปยัง Customer
+	OrderLines []OrderLine `gorm:"foreignKey:OID;constraint:OnDelete:CASCADE" json:"order_lines"` // ความสัมพันธ์ One-to-Many กับตาราง OrderLine
 	CreatedAt  time.Time   `json:"createdAt"`
 	UpdatedAt  time.Time   `json:"updatedAt"`
 	// Customer   Customer    `gorm:"foreignKey:CID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
