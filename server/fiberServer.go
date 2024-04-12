@@ -5,6 +5,9 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/wiraphatys/shop-management-go/admin/adminHandlers"
+	"github.com/wiraphatys/shop-management-go/admin/adminRepositories"
+	"github.com/wiraphatys/shop-management-go/admin/adminUsecases"
 	"github.com/wiraphatys/shop-management-go/config"
 	"github.com/wiraphatys/shop-management-go/customer/customerHandlers"
 	"github.com/wiraphatys/shop-management-go/customer/customerRepositories"
@@ -40,6 +43,7 @@ func (s *fiberServer) Start() {
 	s.initializeCustomerHttpHandler()
 	s.initializeProductHttpHandler()
 	s.initializeOrderHttpHandler()
+	s.initializeAdminHttpHandler()
 
 	log.Printf("Server is starting on %v", url)
 	if err := s.app.Listen(url); err != nil {
@@ -91,4 +95,16 @@ func (s *fiberServer) initializeOrderHttpHandler() {
 	orderRouter.Put("/", orderHandler.UpdateOrderLineById)
 	orderRouter.Delete("/:o_id", orderHandler.DeleteOrderById)
 	orderRouter.Delete("/", orderHandler.DeleteOrderLineById)
+}
+
+func (s *fiberServer) initializeAdminHttpHandler() {
+	// initialize all layer
+	adminRepository := adminRepositories.NewAdminRepository(s.db)
+	adminUsecase := adminUsecases.NewAdminUsecase(adminRepository)
+	adminHandler := adminHandlers.NewAdminHandler(adminUsecase)
+
+	// route
+	adminRouter := s.app.Group("/api/v1/admin")
+	adminRouter.Get("/:email", adminHandler.GetAdminByEmail)
+	adminRouter.Post("/", adminHandler.CreateAdmin)
 }
