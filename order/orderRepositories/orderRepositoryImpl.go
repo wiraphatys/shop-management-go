@@ -1,6 +1,7 @@
 package orderRepositories
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2/log"
@@ -149,4 +150,18 @@ func (r *orderRepositoryImpl) UpdateOrderLineById(orderLine *database.OrderLine)
 		return nil, result.Error
 	}
 	return orderLine, nil
+}
+
+func (r *orderRepositoryImpl) DeleteOrderLineById(o_id string, p_id string) error {
+	// delete process
+	result := r.db.Unscoped().Where(&database.OrderLine{OID: o_id, PID: p_id}).Delete(&database.OrderLine{})
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("order_line not found")
+	}
+
+	return nil
 }

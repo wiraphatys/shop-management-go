@@ -10,4 +10,5 @@ type OrderUsecase interface {
 	GetOrderById(o_id string) (*database.Order, error)
 	CreateOrder(orderData *orderEntities.OrderData) (*database.Order, error)
 	UpdateOrderLineById(orderLine *database.OrderLine) (*database.OrderLine, error)
+	DeleteOrderLineById(orderLine *orderEntities.OrderLineData) error
 }

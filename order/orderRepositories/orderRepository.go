@@ -11,4 +11,5 @@ type OrderRepositoriy interface {
 	InsertOrder(c_id string) (*database.Order, error)
 	InsertOrderLine(o_id, p_id string, quantity int) (*database.OrderLine, error)
 	UpdateOrderLineById(orderLine *database.OrderLine) (*database.OrderLine, error)
+	DeleteOrderLineById(o_id string, p_id string) error
 }
