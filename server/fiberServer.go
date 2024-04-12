@@ -120,5 +120,6 @@ func (s *fiberServer) initializeAuthHttpHandler() {
 
 	// route
 	authRouter := s.app.Group("/api/v1/auth")
-	authRouter.Post("/", authHandler.SignIn)
+	authRouter.Post("/signin", authHandler.SignIn)
+	authRouter.Post("/signout", authHandler.SignOut)
 }

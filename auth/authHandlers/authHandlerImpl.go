@@ -44,3 +44,28 @@ func (h *authHandlerImpl) SignIn(c *fiber.Ctx) error {
 	response := NewResponse(true, "Sign in successfully", nil)
 	return SendResponse(c, response)
 }
+
+func (h *authHandlerImpl) SignOut(c *fiber.Ctx) error {
+	// ดึง token จาก cookie ของผู้ใช้
+	token := c.Cookies("access_token")
+	if token == "" {
+		response := NewResponse(false, "No access token found", nil)
+		return SendResponse(c, response)
+	}
+
+	if err := h.authUsecase.SignOut(token); err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	// delete cookie
+	c.Cookie(&fiber.Cookie{
+		Name:     "access_token",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	})
+
+	response := NewResponse(true, "Signed out successfully", nil)
+	return SendResponse(c, response)
+}

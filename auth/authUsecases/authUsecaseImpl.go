@@ -1,6 +1,7 @@
 package authUsecases
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -44,4 +45,21 @@ func (u *authUsecaseImpl) SignIn(adminData *adminEntities.AdminData) (string, er
 	}
 
 	return tokenString, nil
+}
+
+func (u *authUsecaseImpl) SignOut(token string) error {
+	// clear token to make user log out
+	// after this token will expired and cannot repeat again
+	cfg := config.GetConfig()
+	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		// Verify the signing method
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+		}
+		return []byte(cfg.Jwt.Secret), nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
