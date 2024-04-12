@@ -6,4 +6,5 @@ type OrderHandler interface {
 	GetAllOrders(c *fiber.Ctx) error
 	GetOrderById(c *fiber.Ctx) error
 	CreateOrder(c *fiber.Ctx) error
+	UpdateOrderLineById(c *fiber.Ctx) error
 }

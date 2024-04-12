@@ -141,3 +141,12 @@ func (r *orderRepositoryImpl) InsertOrderLine(o_id, p_id string, quantity int) (
 
 	return orderLine, nil
 }
+
+func (r *orderRepositoryImpl) UpdateOrderLineById(orderLine *database.OrderLine) (*database.OrderLine, error) {
+	// find order_lines by p_id and o_id
+	result := r.db.Model(&orderLine).Updates(orderLine)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return orderLine, nil
+}

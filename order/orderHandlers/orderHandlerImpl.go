@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/wiraphatys/shop-management-go/database"
 	"github.com/wiraphatys/shop-management-go/order/orderEntities"
 	"github.com/wiraphatys/shop-management-go/order/orderUsecases"
 )
@@ -56,5 +57,22 @@ func (h *orderHandlerImpl) CreateOrder(c *fiber.Ctx) error {
 	}
 
 	response := NewResponse(true, "Create order successful", result)
+	return SendResponse(c, response)
+}
+
+func (h *orderHandlerImpl) UpdateOrderLineById(c *fiber.Ctx) error {
+	reqBody := new(database.OrderLine)
+	if err := c.BodyParser(reqBody); err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	result, err := h.orderUsecase.UpdateOrderLineById(reqBody)
+	if err != nil {
+		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	response := NewResponse(true, "Update order_line successful", result)
 	return SendResponse(c, response)
 }

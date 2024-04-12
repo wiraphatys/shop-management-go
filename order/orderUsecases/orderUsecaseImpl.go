@@ -55,3 +55,22 @@ func (u *orderUsecaseImpl) CreateOrder(orderData *orderEntities.OrderData) (*dat
 
 	return order, nil
 }
+
+func (u *orderUsecaseImpl) UpdateOrderLineById(orderLine *database.OrderLine) (*database.OrderLine, error) {
+	// validate o_id , p_id
+	if orderLine.OID == "" || orderLine.PID == "" {
+		return nil, fmt.Errorf("o_id or p_id is null")
+	}
+
+	// validate quantity
+	if orderLine.Quantity <= 0 {
+		return nil, fmt.Errorf("quantity must be positive")
+	}
+
+	updatedOrderLine, err := u.orderRepository.UpdateOrderLineById(orderLine)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedOrderLine, nil
+}

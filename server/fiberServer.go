@@ -88,4 +88,5 @@ func (s *fiberServer) initializeOrderHttpHandler() {
 	orderRouter.Get("/", orderHandler.GetAllOrders)
 	orderRouter.Get("/:o_id", orderHandler.GetOrderById)
 	orderRouter.Post("/", orderHandler.CreateOrder)
+	orderRouter.Put("/", orderHandler.UpdateOrderLineById)
 }
