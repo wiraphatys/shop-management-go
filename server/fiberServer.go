@@ -8,6 +8,8 @@ import (
 	"github.com/wiraphatys/shop-management-go/admin/adminHandlers"
 	"github.com/wiraphatys/shop-management-go/admin/adminRepositories"
 	"github.com/wiraphatys/shop-management-go/admin/adminUsecases"
+	"github.com/wiraphatys/shop-management-go/auth/authHandlers"
+	"github.com/wiraphatys/shop-management-go/auth/authUsecases"
 	"github.com/wiraphatys/shop-management-go/config"
 	"github.com/wiraphatys/shop-management-go/customer/customerHandlers"
 	"github.com/wiraphatys/shop-management-go/customer/customerRepositories"
@@ -44,6 +46,7 @@ func (s *fiberServer) Start() {
 	s.initializeProductHttpHandler()
 	s.initializeOrderHttpHandler()
 	s.initializeAdminHttpHandler()
+	s.initializeAuthHttpHandler()
 
 	log.Printf("Server is starting on %v", url)
 	if err := s.app.Listen(url); err != nil {
@@ -107,4 +110,15 @@ func (s *fiberServer) initializeAdminHttpHandler() {
 	adminRouter := s.app.Group("/api/v1/admin")
 	adminRouter.Get("/:email", adminHandler.GetAdminByEmail)
 	adminRouter.Post("/", adminHandler.CreateAdmin)
+}
+
+func (s *fiberServer) initializeAuthHttpHandler() {
+	// initialize all layer
+	adminRepository := adminRepositories.NewAdminRepository(s.db)
+	authUsecase := authUsecases.NewAuthUsecase(adminRepository)
+	authHandler := authHandlers.NewAuthHandler(authUsecase)
+
+	// route
+	authRouter := s.app.Group("/api/v1/auth")
+	authRouter.Post("/", authHandler.SignIn)
 }
