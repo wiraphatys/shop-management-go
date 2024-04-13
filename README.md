@@ -1,6 +1,6 @@
 # Shop Management System
 
-![ER Diagram](https://i.ibb.co/X8fdhk7/shop-management-system-ER-diagram.png)
+![ER Diagram](https://i.ibb.co/GTf1K3W/er-diagram-shop-management.png)
 
 ## Overview
 
