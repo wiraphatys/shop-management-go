@@ -27,13 +27,73 @@ The Shop Management System is a backend solution designed to streamline operatio
    cd shop-management-go
    ```
 
-3. Build and run the Docker container:
+3. Setup .env
+    ```
+        # Server settings
+        SERVER_HOST=
+        SERVER_PORT=
+
+        # Database settings 
+        DB_HOST=
+        DB_PORT=
+        DB_USER=
+        DB_PASS=
+        DB_NAME=
+        DB_SSL_MODE=disable
+        DB_TIMEZONE=
+
+        # Logging settings
+        LOG_LEVEL=
+        LOG_FILE=
+
+        # JWT settings
+        JWT_SECRET=
+        JWT_EXPIRATION=
+
+        # Database pool settings  
+        DB_MAX_OPEN_CONNS=
+        DB_MAX_IDLE_CONNS=
+    ```
+
+4. Build and run the Docker container:
+    ```
+        version: '3.8'
+
+        services:
+        postgres:
+            image: postgres:latest
+            container_name: postgres
+            environment:
+            POSTGRES_DB: <db_name>
+            POSTGRES_USER: <username>
+            POSTGRES_PASSWORD: <password>
+            volumes:
+            - postgres_data:/var/lib/postgresql/data
+            ports:
+            - "5432:5432"
+            restart: unless-stopped
+
+        pgadmin:
+            image: dpage/pgadmin4:latest
+            container_name: pgadmin
+            environment:
+            PGADMIN_DEFAULT_EMAIL: <email_to_login>
+            PGADMIN_DEFAULT_PASSWORD: <password>
+            ports:
+            - "<external:internal>"
+            depends_on:
+            - postgres
+            restart: unless-stopped
+
+        volumes:
+        postgres_data:
+    ```
 
    ```bash
    docker-compose up -d
    ```
 
-4. Access the API at `http://localhost:your_port`.
+5. Access the API at `http://localhost:your_port`.
 
 ## Contributors
 
