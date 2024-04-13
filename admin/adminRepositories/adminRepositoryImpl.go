@@ -29,6 +29,19 @@ func (r *adminRepositoryImpl) FindAdminByEmail(email string) (*database.Admin, e
 	return &admin, nil
 }
 
+func (r *adminRepositoryImpl) FindAdminById(a_id string) (*database.Admin, error) {
+	var admin database.Admin
+	result := r.db.First(&admin, "a_id = ?", a_id)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, result.Error
+		}
+		log.Errorf("FindAdminById: %v", result.Error)
+		return nil, result.Error
+	}
+	return &admin, nil
+}
+
 func (r *adminRepositoryImpl) InsertAdmin(admin *database.Admin) (*database.Admin, error) {
 	// create new admin
 	admin.AID = "1"
