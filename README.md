@@ -70,7 +70,7 @@ The Shop Management System is a backend solution designed to streamline operatio
             volumes:
             - postgres_data:/var/lib/postgresql/data
             ports:
-            - "5432:5432"
+            - "<external:internal>"
             restart: unless-stopped
 
         pgadmin:
