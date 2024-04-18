@@ -7,6 +7,7 @@ import (
 	"github.com/wiraphatys/shop-management-go/admin/adminEntities"
 	"github.com/wiraphatys/shop-management-go/admin/adminUsecases"
 	"github.com/wiraphatys/shop-management-go/database"
+	"github.com/wiraphatys/shop-management-go/util"
 )
 
 type adminHandlerImpl struct {
@@ -22,6 +23,12 @@ func NewAdminHandler(adminUsecase adminUsecases.AdminUsecase) AdminHandler {
 func (h *adminHandlerImpl) GetAdminByEmail(c *fiber.Ctx) error {
 	email := strings.Trim(c.Params("email"), " ")
 
+	// validate email pattern
+	if !util.IsEmailValid(email) {
+		response := NewResponse(false, "invalid email address", nil)
+		return SendResponse(c, response)
+	}
+
 	admin, err := h.adminUsecase.GetAdminByEmail(email)
 	if err != nil {
 		response := NewResponse(false, err.Error(), nil)
@@ -33,13 +40,18 @@ func (h *adminHandlerImpl) GetAdminByEmail(c *fiber.Ctx) error {
 }
 
 func (h *adminHandlerImpl) CreateAdmin(c *fiber.Ctx) error {
-	reqBody := new(database.Admin)
-	if err := c.BodyParser(reqBody); err != nil {
+	admin := new(database.Admin)
+	if err := c.BodyParser(admin); err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)
 	}
 
-	admin, err := h.adminUsecase.CreateAdmin(reqBody)
+	if !util.IsEmailValid(admin.Email) {
+		response := NewResponse(false, "invalid email address", nil)
+		return SendResponse(c, response)
+	}
+
+	admin, err := h.adminUsecase.CreateAdmin(admin)
 	if err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)
