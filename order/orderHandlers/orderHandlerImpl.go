@@ -44,13 +44,19 @@ func (h *orderHandlerImpl) GetOrderById(c *fiber.Ctx) error {
 }
 
 func (h *orderHandlerImpl) CreateOrder(c *fiber.Ctx) error {
-	reqBody := new(orderEntities.OrderData)
-	if err := c.BodyParser(reqBody); err != nil {
+	orderData := new(orderEntities.OrderData)
+	if err := c.BodyParser(orderData); err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)
 	}
 
-	result, err := h.orderUsecase.CreateOrder(reqBody)
+	// validate orderData
+	if orderData.CID == "" || orderData.OrderLines == nil || len(orderData.OrderLines) == 0 {
+		response := NewResponse(false, "cid or order_lines is null", nil)
+		return SendResponse(c, response)
+	}
+
+	result, err := h.orderUsecase.CreateOrder(orderData)
 	if err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)
@@ -61,13 +67,19 @@ func (h *orderHandlerImpl) CreateOrder(c *fiber.Ctx) error {
 }
 
 func (h *orderHandlerImpl) UpdateOrderLineById(c *fiber.Ctx) error {
-	reqBody := new(database.OrderLine)
-	if err := c.BodyParser(reqBody); err != nil {
+	orderLine := new(database.OrderLine)
+	if err := c.BodyParser(orderLine); err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)
 	}
 
-	result, err := h.orderUsecase.UpdateOrderLineById(reqBody)
+	// validate o_id , p_id
+	if orderLine.OID == "" || orderLine.PID == "" {
+		response := NewResponse(false, "o_id or p_id is null", nil)
+		return SendResponse(c, response)
+	}
+
+	result, err := h.orderUsecase.UpdateOrderLineById(orderLine)
 	if err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)
@@ -91,13 +103,19 @@ func (h *orderHandlerImpl) DeleteOrderById(c *fiber.Ctx) error {
 }
 
 func (h *orderHandlerImpl) DeleteOrderLineById(c *fiber.Ctx) error {
-	reqBody := new(orderEntities.OrderLineData)
-	if err := c.BodyParser(reqBody); err != nil {
+	orderLine := new(orderEntities.OrderLineData)
+	if err := c.BodyParser(orderLine); err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)
 	}
 
-	err := h.orderUsecase.DeleteOrderLineById(reqBody)
+	// validate o_id , p_id
+	if orderLine.OID == "" || orderLine.PID == "" {
+		response := NewResponse(false, "o_id or p_id is null", nil)
+		return SendResponse(c, response)
+	}
+
+	err := h.orderUsecase.DeleteOrderLineById(orderLine)
 	if err != nil {
 		response := NewResponse(false, err.Error(), nil)
 		return SendResponse(c, response)

@@ -37,11 +37,6 @@ func (u *orderUsecaseImpl) GetOrderById(o_id string) (*database.Order, error) {
 }
 
 func (u *orderUsecaseImpl) CreateOrder(orderData *orderEntities.OrderData) (*database.Order, error) {
-	// validate orderData
-	if orderData.CID == "" || orderData.OrderLines == nil || len(orderData.OrderLines) == 0 {
-		return nil, fmt.Errorf("cid or order_lines is null")
-	}
-
 	for idx, line := range orderData.OrderLines {
 		if line.PID == "" || line.Quantity <= 0 {
 			return nil, fmt.Errorf("missing PID or Quantity at index %d", idx)
@@ -57,11 +52,6 @@ func (u *orderUsecaseImpl) CreateOrder(orderData *orderEntities.OrderData) (*dat
 }
 
 func (u *orderUsecaseImpl) UpdateOrderLineById(orderLine *database.OrderLine) (*database.OrderLine, error) {
-	// validate o_id , p_id
-	if orderLine.OID == "" || orderLine.PID == "" {
-		return nil, fmt.Errorf("o_id or p_id is null")
-	}
-
 	// validate quantity
 	if orderLine.Quantity <= 0 {
 		return nil, fmt.Errorf("quantity must be positive")
@@ -83,11 +73,6 @@ func (u *orderUsecaseImpl) DeleteOrderById(o_id string) error {
 }
 
 func (u *orderUsecaseImpl) DeleteOrderLineById(orderLine *orderEntities.OrderLineData) error {
-	// validate o_id , p_id
-	if orderLine.OID == "" || orderLine.PID == "" {
-		return fmt.Errorf("o_id or p_id is null")
-	}
-
 	if err := u.orderRepository.DeleteOrderLineById(orderLine.OID, orderLine.PID); err != nil {
 		return err
 	}
