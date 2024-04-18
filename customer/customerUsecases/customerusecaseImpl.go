@@ -1,12 +1,9 @@
 package customerUsecases
 
 import (
-	"fmt"
-
 	"github.com/wiraphatys/shop-management-go/customer/customerEntities"
 	"github.com/wiraphatys/shop-management-go/customer/customerRepositories"
 	"github.com/wiraphatys/shop-management-go/database"
-	"github.com/wiraphatys/shop-management-go/util"
 )
 
 type customerUsecaseImpl struct {
@@ -28,21 +25,14 @@ func (u *customerUsecaseImpl) GetAllCustomers() (*[]database.Customer, error) {
 	return result, nil
 }
 func (u *customerUsecaseImpl) GetCustomerByEmail(email string) (*database.Customer, error) {
-	if !util.IsEmailValid(email) {
-		return nil, fmt.Errorf("invalid email address")
-	}
-
 	result, err := u.customerRepository.FindCustomerByEmail(email)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
-func (u *customerUsecaseImpl) RegisterCustomer(customer *database.Customer) (*database.Customer, error) {
-	if !util.IsEmailValid(customer.Email) {
-		return nil, fmt.Errorf("invalid email address")
-	}
 
+func (u *customerUsecaseImpl) RegisterCustomer(customer *database.Customer) (*database.Customer, error) {
 	result, err := u.customerRepository.InsertCustomer(customer)
 	if err != nil {
 		return nil, err
@@ -52,10 +42,6 @@ func (u *customerUsecaseImpl) RegisterCustomer(customer *database.Customer) (*da
 }
 
 func (u *customerUsecaseImpl) UpdateCustomerByEmail(email string, reqBody *customerEntities.CustomerData) (*database.Customer, error) {
-	if !util.IsEmailValid(email) {
-		return nil, fmt.Errorf("invalid email address")
-	}
-
 	result, err := u.customerRepository.UpdateCustomerByEmail(email, reqBody)
 	if err != nil {
 		return nil, err
@@ -65,10 +51,6 @@ func (u *customerUsecaseImpl) UpdateCustomerByEmail(email string, reqBody *custo
 }
 
 func (u *customerUsecaseImpl) DeleteCustomerByEmail(email string) error {
-	if !util.IsEmailValid(email) {
-		return fmt.Errorf("invalid email address")
-	}
-
 	if err := u.customerRepository.DeleteCustomerByEmail(email); err != nil {
 		return err
 	}
