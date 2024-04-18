@@ -11,23 +11,24 @@ import (
 
 type middlewareUsecaseImpl struct {
 	adminRepository adminRepositories.AdminRepository
+	cfg             *config.Config
 }
 
-func NewMiddlewareUsecase(adminRepository adminRepositories.AdminRepository) MiddlewareUsecase {
+func NewMiddlewareUsecase(adminRepository adminRepositories.AdminRepository, cfg *config.Config) MiddlewareUsecase {
 	return &middlewareUsecaseImpl{
 		adminRepository: adminRepository,
+		cfg:             cfg,
 	}
 }
 
 func (u *middlewareUsecaseImpl) VerifyToken(accessToken string) (*database.Admin, error) {
-	cfg := config.GetConfig()
 	claims := &jwt.MapClaims{}
 
 	token, err := jwt.ParseWithClaims(accessToken, claims, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
-		return []byte(cfg.Jwt.Secret), nil
+		return []byte(u.cfg.Jwt.Secret), nil
 	})
 
 	if err != nil {

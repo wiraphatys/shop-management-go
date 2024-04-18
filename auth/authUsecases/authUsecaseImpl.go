@@ -13,11 +13,13 @@ import (
 
 type authUsecaseImpl struct {
 	adminRepository adminRepositories.AdminRepository
+	cfg             *config.Config
 }
 
-func NewAuthUsecase(adminRepository adminRepositories.AdminRepository) AuthUsecase {
+func NewAuthUsecase(adminRepository adminRepositories.AdminRepository, cfg *config.Config) AuthUsecase {
 	return &authUsecaseImpl{
 		adminRepository: adminRepository,
+		cfg:             cfg,
 	}
 }
 
@@ -32,14 +34,12 @@ func (u *authUsecaseImpl) SignIn(adminData *adminEntities.AdminData) (string, er
 	}
 
 	// create jwt token
-	cfg := config.GetConfig()
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":  existedAdmin.AID,
-		"exp": time.Now().Add(time.Second * time.Duration(cfg.Jwt.Expiration)).Unix(),
+		"exp": time.Now().Add(time.Second * time.Duration(u.cfg.Jwt.Expiration)).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte(cfg.Jwt.Secret))
+	tokenString, err := token.SignedString([]byte(u.cfg.Jwt.Secret))
 	if err != nil {
 		return "", err
 	}
@@ -50,13 +50,12 @@ func (u *authUsecaseImpl) SignIn(adminData *adminEntities.AdminData) (string, er
 func (u *authUsecaseImpl) SignOut(token string) error {
 	// clear token to make user log out
 	// after this token will expired and cannot repeat again
-	cfg := config.GetConfig()
 	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		// Verify the signing method
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
-		return []byte(cfg.Jwt.Secret), nil
+		return []byte(u.cfg.Jwt.Secret), nil
 	})
 	if err != nil {
 		return err

@@ -12,11 +12,13 @@ import (
 
 type authHandlerImpl struct {
 	authUsecase authUsecases.AuthUsecase
+	cfg         *config.Config
 }
 
-func NewAuthHandler(authUsecase authUsecases.AuthUsecase) AuthHandler {
+func NewAuthHandler(authUsecase authUsecases.AuthUsecase, cfg *config.Config) AuthHandler {
 	return &authHandlerImpl{
 		authUsecase: authUsecase,
+		cfg:         cfg,
 	}
 }
 
@@ -38,12 +40,10 @@ func (h *authHandlerImpl) SignIn(c *fiber.Ctx) error {
 		return SendResponse(c, response)
 	}
 
-	cfg := config.GetConfig()
-
 	c.Cookie(&fiber.Cookie{
 		Name:     "access_token",
 		Value:    token,
-		Expires:  time.Now().Add(time.Second * time.Duration(cfg.Jwt.Expiration)),
+		Expires:  time.Now().Add(time.Second * time.Duration(h.cfg.Jwt.Expiration)),
 		HTTPOnly: true,
 	})
 

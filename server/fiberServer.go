@@ -62,7 +62,7 @@ func (s *fiberServer) Start() {
 func (s *fiberServer) initializeMiddlewareHttpHandler() middlewareHandlers.MiddlewareHandler {
 	// initialize all layer
 	adminRepository := adminRepositories.NewAdminRepository(s.db)
-	middlewareUsecase := middlewareUsecases.NewMiddlewareUsecase(adminRepository)
+	middlewareUsecase := middlewareUsecases.NewMiddlewareUsecase(adminRepository, s.cfg)
 	middlewareHandler := middlewareHandlers.NewMiddlewareHandler(middlewareUsecase)
 
 	return middlewareHandler
@@ -71,8 +71,8 @@ func (s *fiberServer) initializeMiddlewareHttpHandler() middlewareHandlers.Middl
 func (s *fiberServer) initializeAuthHttpHandler(middleware middlewareHandlers.MiddlewareHandler) {
 	// initialize all layer
 	adminRepository := adminRepositories.NewAdminRepository(s.db)
-	authUsecase := authUsecases.NewAuthUsecase(adminRepository)
-	authHandler := authHandlers.NewAuthHandler(authUsecase)
+	authUsecase := authUsecases.NewAuthUsecase(adminRepository, s.cfg)
+	authHandler := authHandlers.NewAuthHandler(authUsecase, s.cfg)
 
 	// route
 	authRouter := s.app.Group("/api/v1/auth")
