@@ -7,6 +7,7 @@ import (
 	"github.com/wiraphatys/shop-management-go/admin/adminEntities"
 	"github.com/wiraphatys/shop-management-go/auth/authUsecases"
 	"github.com/wiraphatys/shop-management-go/config"
+	"github.com/wiraphatys/shop-management-go/util"
 )
 
 type authHandlerImpl struct {
@@ -23,6 +24,11 @@ func (h *authHandlerImpl) SignIn(c *fiber.Ctx) error {
 	reqBody := new(adminEntities.AdminData)
 	if err := c.BodyParser(reqBody); err != nil {
 		response := NewResponse(false, err.Error(), nil)
+		return SendResponse(c, response)
+	}
+
+	if !util.IsEmailValid(reqBody.Email) {
+		response := NewResponse(false, "invalid email address", nil)
 		return SendResponse(c, response)
 	}
 
