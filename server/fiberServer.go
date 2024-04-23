@@ -43,6 +43,11 @@ func NewFiberServer(cfg *config.Config, db *gorm.DB) Server {
 func (s *fiberServer) Start() {
 	url := fmt.Sprintf("%v:%d", s.cfg.Server.Host, s.cfg.Server.Port)
 
+	// healthcheck
+	s.app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("hello world")
+	})
+
 	// init middleware
 	middleware := s.initializeMiddlewareHttpHandler()
 

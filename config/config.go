@@ -54,7 +54,7 @@ func GetConfig() *Config {
 	once.Do(func() {
 		config = &Config{}
 
-		viper.SetConfigFile(".env")
+		viper.SetConfigFile("./bin/.env")
 		viper.AutomaticEnv()
 
 		if err := viper.ReadInConfig(); err != nil {
